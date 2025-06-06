@@ -1,3 +1,4 @@
+# pip install numpy matplotlib pandas seaborn scikit-learn keras tensorflow
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
