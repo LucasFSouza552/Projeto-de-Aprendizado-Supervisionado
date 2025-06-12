@@ -51,5 +51,5 @@ Abaixo esta uma analise comparativa entre os modelos com vase na aciracia e temp
 - **Arvore de decisao:** é uma otima escolha caso a prioridade seja a interpretabilidade e pouco tempo para executar o treinamento.
 - **KNN:** se mostrou inadequado  para este caso, tendo em vista a sua acuracia de 63,3%, o alto tempo necessario para treinar, a baixa interpretabilidade e sua grande sensibilidade a normalizaçao, bem como, a complexidade para se encontrar o valor de K ideal.
 
-#### Aprendizados do grupo: 
+### Aprendizados do grupo: 
 Durante a execucao deste trabalho podemos entender melhor a importancia de preparacao dos dados para cada um dos modelos. Conseguimos perceber que para se escolher o modelo precisamos analizar e conhecer a base e saber se é necessario priorizar desempenho, interpretabilidade ou buscar um meio termo. Ao decorrer de todo o processo, conseguimos ter uma ideia melhor de como as metricas são importantes para uma boa analise do modelo, mas tambem a necessidade de avaliar o tempo de execucao e a facilidade de manutencao de cada um dos algoritmos, o qual, só se faz possivel por meio da pratica e analise dos resultados.
