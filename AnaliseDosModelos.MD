@@ -37,6 +37,19 @@ Abaixo esta uma analise comparativa entre os modelos com vase na aciracia e temp
 | KNN | 63.3 | Lento | Baixa | Sensivel a Normalizacao e ao valor do K |
 
 ### Analise Comparativa:
-- **Melhor Desempenho(aciracia):** A random forest obteve o melhor desempenho com 93,3% de acuracia, superando significativamente os outros dois.
+- **Melhor Desempenho(Acuracia):** A random forest obteve o melhor desempenho com 93,3% de acuracia, superando significativamente os outros dois.
 - **Interpretabilidade:** A Arvore de Decisao é a mais facil de interpretar, pois apresenta regras claras e faceis de visualizar. Já o Random Forest é mais dificil de analisar individualmente por ser um modelo de "caixa preta".
-- **Facilidade e velocidade:** Mais rapido de treinar: A arvore de decisao foi mais facil e rapida de se treinar, seguida pelo Random Forest. O KNN, por ser preguiçoso()
+- **Facilidade e velocidade:** Mais rapido de treinar: A arvore de decisao foi mais facil e rapida de se treinar, seguida pelo Random Forest. O KNN, por ser preguiçoso(não treina apenas armazena), ele tambem teve um grande atraso na inferencia, variando de acordo com o tamanho do dataset, quanto maior mais atraso.
+
+### Desafios:
+- **KNN:** para trabalharmos com ele, foi necessario aplicarmos conceitos de normatização, evitando vieses em variavei com diferencas muito grandes de escalas.
+- **Random Forest:** devido a forma como funciona acaba sendo muito mais pesado computacionalmente falando.
+- **Arvore de Decisao:** em alguns momentos apresentou sinais de overfitting, mesmo usando estrategias para tentar controlar essa questao.
+
+### Conclusao Final e Aprendizado:
+- **Radom Forest:** apesar do desafio computacional, foi o metodo com o melhor desempenho, uma otima robustez e uma interpretabilidade interessante.
+- **Arvore de decisao:** é uma otima escolha caso a prioridade seja a interpretabilidade e pouco tempo para executar o treinamento.
+- **KNN:** se mostrou inadequado  para este caso, tendo em vista a sua acuracia de 63,3%, o alto tempo necessario para treinar, a baixa interpretabilidade e sua grande sensibilidade a normalizaçao, bem como, a complexidade para se encontrar o valor de K ideal.
+
+#### Aprendizados do grupo: 
+Durante a execucao deste trabalho podemos entender melhor a importancia de preparacao dos dados para cada um dos modelos. Conseguimos perceber que para se escolher o modelo precisamos analizar e conhecer a base e saber se é necessario priorizar desempenho, interpretabilidade ou buscar um meio termo. Ao decorrer de todo o processo, conseguimos ter uma ideia melhor de como as metricas são importantes para uma boa analise do modelo, mas tambem a necessidade de avaliar o tempo de execucao e a facilidade de manutencao de cada um dos algoritmos, o qual, só se faz possivel por meio da pratica e analise dos resultados.
