@@ -7,17 +7,33 @@ from sklearn.preprocessing import StandardScaler
 import os
 
 def load_dataframe(): 
+	"""
+	Carrega o dataset de diabetes do arquivo CSV.
+	Retorna:
+		DataFrame pandas contendo os dados do dataset
+	"""
 	df = pd.read_csv("data/diabetes.csv")
 	return df
 
 def save_output(df, filename):
-    if not os.path.exists("output"):
-        os.makedirs("output")
-    df.to_csv(f"output/{filename}.csv", index=False)
-    print(f"Arquivo salvo em output/{filename}.csv")
+	"""
+	Salva um DataFrame em um arquivo CSV na pasta output.
+	Args:
+		df: DataFrame a ser salvo
+		filename: Nome do arquivo (sem extensão)
+	"""
+	if not os.path.exists("output"):
+		os.makedirs("output")
+	df.to_csv(f"output/{filename}.csv", index=False)
+	print(f"Arquivo salvo em output/{filename}.csv")
 
 def analyze_distributions(df):
-	"""Analyze and plot distributions of all variables"""
+	"""
+	Analisa e plota as distribuições de todas as variáveis do dataset.
+	Cria histogramas com KDE (Kernel Density Estimation) para cada variável.
+	Args:
+		df: DataFrame contendo os dados
+	"""
 	print("\n=== Análise de Distribuições ===")
 
 	# Configurar o estilo dos gráficos
@@ -44,7 +60,12 @@ def analyze_distributions(df):
 	plt.close()
 
 def analyze_correlations(df):
-	"""Analyze and plot correlations between variables"""
+	"""
+	Analisa e plota as correlações entre as variáveis do dataset.
+	Cria um mapa de calor (heatmap) com as correlações e mostra as correlações mais fortes.
+	Args:
+		df: DataFrame contendo os dados
+	"""
 	print("\n=== Análise de Correlações ===")
 
 	# Calcular matriz de correlação
@@ -66,7 +87,12 @@ def analyze_correlations(df):
 	print(corr_pairs[corr_pairs != 1.0].head(10))
 
 def detect_outliers(df):
-	"""Detect and analyze outliers in the dataset"""
+	"""
+	Detecta e analisa outliers no dataset usando o método IQR (Interquartile Range).
+	Cria boxplots para cada variável e mostra estatísticas dos outliers.
+	Args:
+		df: DataFrame contendo os dados
+	"""
 	print("\n=== Análise de Outliers ===")
 
 	# Configurar o estilo dos gráficos
@@ -107,7 +133,12 @@ def detect_outliers(df):
 			print(f"Valores dos outliers: {outliers[column].values}")
 
 def summary_statistics(df):
-	"""Generate summary statistics for the dataset"""
+	"""
+	Gera estatísticas descritivas do dataset.
+	Mostra estatísticas básicas, informações do dataset e contagem de valores nulos.
+	Args:
+		df: DataFrame contendo os dados
+	"""
 	print("\n=== Estatísticas Descritivas ===")
 	print("\nEstatísticas básicas:")
 	print(df.describe())
@@ -119,6 +150,14 @@ def summary_statistics(df):
 	print(df.isnull().sum())
 
 def remove_outliers_iqr(df, columns):
+	"""
+	Remove outliers do dataset usando o método IQR.
+	Args:
+		df: DataFrame contendo os dados
+		columns: Lista de colunas para remover outliers
+	Returns:
+		DataFrame com outliers removidos
+	"""
 	df_clean = df.copy()
 	for column in columns:
 		Q1 = df_clean[column].quantile(0.25)
@@ -130,6 +169,18 @@ def remove_outliers_iqr(df, columns):
 	return df_clean
 
 def prepare_data(df):
+	"""
+	Prepara e limpa os dados para modelagem.
+	Realiza as seguintes etapas:
+	1. Trata valores zero inválidos
+	2. Remove linhas com valores ausentes
+	3. Normaliza variáveis numéricas
+	4. Remove outliers
+	Args:
+		df: DataFrame contendo os dados
+	Returns:
+		DataFrame limpo e preparado
+	"""
 	print("\n=== Limpeza e Preparação dos Dados ===")
 	df_clean = df.copy()
 
@@ -157,7 +208,18 @@ def prepare_data(df):
 	return df_clean
 
 def feature_engineering(df):
-	"""Realiza seleção e engenharia de características"""
+	"""
+	Realiza engenharia de características no dataset.
+	Inclui:
+	1. Seleção de features baseada em correlação
+	2. Criação de features de interação
+	3. Categorização de variáveis
+	4. One-hot encoding
+	Args:
+		df: DataFrame contendo os dados
+	Returns:
+		DataFrame com novas features
+	"""
 	print("\n=== Engenharia de Características ===")
 	df_eng = df.copy()
 
@@ -198,82 +260,69 @@ def feature_engineering(df):
 	# 4. One-hot encoding para variáveis categóricas
 	categorical_cols = ['BMI_Category', 'Age_Group', 'Glucose_Level']
 	df_eng = pd.get_dummies(df_eng, columns=categorical_cols, drop_first=True)
-
+	
 	print("\nNovas features criadas:")
 	print(df_eng.columns.tolist())
-
+	
 	return df_eng
 
 def balance_classes(df):
-	"""Analisa e balanceia as classes do dataset usando amostragem aleatória"""
+	"""
+	Balanceia as classes do dataset usando undersampling.
+	Args:
+		df: DataFrame contendo os dados
+	Returns:
+		DataFrame com classes balanceadas
+	"""
 	print("\n=== Análise e Balanceamento de Classes ===")
-
-	# Separar features e target
-	X = df.drop('Outcome', axis=1)
-	y = df['Outcome']
-
-	# Mostrar distribuição original das classes
+	
+	# Mostrar distribuição original
+	class_counts = df['Outcome'].value_counts()
 	print("\nDistribuição original das classes:")
-	class_0 = df[df['Outcome'] == 0]
-	class_1 = df[df['Outcome'] == 1]
-
-	print(f"Classe 0 (Sem diabetes): {len(class_0)} ({len(class_0)/len(df)*100:.1f}%)")
-	print(f"Classe 1 (Com diabetes): {len(class_1)} ({len(class_1)/len(df)*100:.1f}%)")
-
-	# Aplicar balanceamento apenas se houver desbalanceamento significativo
-	if len(class_0) / len(class_1) > 1.5 or len(class_1) / len(class_0) > 1.5:
-		print("\nAplicando balanceamento de classes...")
-
-		# Determinar qual classe é a minoritária
-		if len(class_0) < len(class_1):
-			minority_class = class_0
-			majority_class = class_1
-		else:
-			minority_class = class_1
-			majority_class = class_0
-
-		# Amostrar aleatoriamente da classe majoritária para igualar à minoritária
-		majority_sampled = majority_class.sample(n=len(minority_class), random_state=42)
-
-		# Combinar as classes balanceadas
-		df_balanced = pd.concat([minority_class, majority_sampled])
-		df_balanced = df_balanced.sample(frac=1, random_state=42) # Embaralhar os dados
-
-		# Mostrar nova distribuição
-		new_class_0 = df_balanced[df_balanced['Outcome'] == 0]
-		new_class_1 = df_balanced[df_balanced['Outcome'] == 1]
-
-		print("\nNova distribuição após balanceamento:")
-		print(f"Classe 0 (Sem diabetes): {len(new_class_0)} ({len(new_class_0)/len(df_balanced)*100:.1f}%)")
-		print(f"Classe 1 (Com diabetes): {len(new_class_1)} ({len(new_class_1)/len(df_balanced)*100:.1f}%)")
-
-		return df_balanced
-	else:
-		print("\nAs classes estão relativamente balanceadas. Balanceamento não será aplicado.")
-		return df
+	print(f"Classe 0 (Sem diabetes): {class_counts[0]} ({class_counts[0]/len(df)*100:.1f}%)")
+	print(f"Classe 1 (Com diabetes): {class_counts[1]} ({class_counts[1]/len(df)*100:.1f}%)")
+	
+	# Aplicar undersampling
+	print("\nAplicando balanceamento de classes...")
+	min_class = df[df['Outcome'] == df['Outcome'].value_counts().idxmin()]
+	maj_class = df[df['Outcome'] == df['Outcome'].value_counts().idxmax()]
+	
+	# Amostrar aleatoriamente da classe majoritária
+	maj_class_sampled = maj_class.sample(n=len(min_class), random_state=42)
+	
+	# Combinar as classes
+	df_balanced = pd.concat([min_class, maj_class_sampled])
+	
+	# Mostrar nova distribuição
+	new_class_counts = df_balanced['Outcome'].value_counts()
+	print("\nNova distribuição após balanceamento:")
+	print(f"Classe 0 (Sem diabetes): {new_class_counts[0]} ({new_class_counts[0]/len(df_balanced)*100:.1f}%)")
+	print(f"Classe 1 (Com diabetes): {new_class_counts[1]} ({new_class_counts[1]/len(df_balanced)*100:.1f}%)")
+	
+	return df_balanced
 
 def main():
+	"""
+	Função principal que executa todo o pipeline de análise e preparação dos dados.
+	"""
 	# Carregar dados
 	df = load_dataframe()
-
-	# Realizar análise exploratória
+	
+	# Análise exploratória
 	summary_statistics(df)
 	analyze_distributions(df)
 	analyze_correlations(df)
 	detect_outliers(df)
-
-	# Limpeza e preparação dos dados
-	df_prepared = prepare_data(df)
-
-	# Engenharia de características
-	df_engineered = feature_engineering(df_prepared)
-
-	# Balanceamento de classes quando há necessidade
-	df_balanced = balance_classes(df_engineered)
-
-	print("\nDataset final:")
-	print(df_balanced.head())
-	print("\nShape do dataset:", df_balanced.head())
+	
+	# Preparação dos dados
+	df_clean = prepare_data(df)
+	df_eng = feature_engineering(df_clean)
+	df_balanced = balance_classes(df_eng)
+	
+	# Salvar resultados
+	save_output(df_balanced, "processed_data")
+	
+	return df_balanced
 
 if __name__ == "__main__":
 	main()

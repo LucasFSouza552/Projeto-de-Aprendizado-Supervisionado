@@ -1,55 +1,94 @@
-# Relatorio Final - Analise de Modelos de Classificação
+# Relatório Final - Análise de Modelos de Classificação
 
 #### 1. Introdução ao Problema:
-Este trabalho teve como objetivo aplicar e comparar diferentes algoritmos de classificação em um conjunto de dados real, visando a classificação correta das classes alvo. Tendo como prioridade analisar o desempenho dos modelos, sua interpretabilidade e eficiencia. Entender os desafios enfrentados durante todo o processo.
+Este trabalho teve como objetivo aplicar e comparar diferentes algoritmos de classificação em um conjunto de dados real, visando a classificação correta das classes alvo. Tendo como prioridade analisar o desempenho dos modelos, sua interpretabilidade e eficiência. Entender os desafios enfrentados durante todo o processo.
 
 #### 2. Descrição do Dataset:
-O dataset utilizado é Pima Indians Diabetes e ele possue as seguintes caracteristicas: 
+O dataset utilizado é Pima Indians Diabetes e ele possui as seguintes características: 
 - Aproximadamente 768 linhas
 - 8 variáveis preditoras
 - Variável alvo: Outcome (0 = não diabético, 1 = diabético)
 - Atributos: Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction e Age.
 
-#### 3. EDA(Analise Exploratoria de Dados) e Preparação dos Dados: 
-Ao fazer a analise exploratoria dos daos aplicamos as seguintes etapas, em busca da validação, tratamento e normatização dos dados.
+#### 3. EDA (Análise Exploratória de Dados) e Preparação dos Dados: 
+Ao fazer a análise exploratória dos dados aplicamos as seguintes etapas, em busca da validação, tratamento e normatização dos dados:
 
-- Verificação de valores ausentes
-- Análise de distribuição das variávei
-- Correlação entre atributos
-- Balanceamento da variável alvo (se necessário)
-- Normalização dos dados (aplicada especialmente para o KNN)
-- Divisão do conjunto em treino e teste
+- Verificação de valores ausentes e substituição de zeros por NaN
+- Análise de distribuição das variáveis com histogramas e KDE
+- Análise de correlações entre atributos usando matriz de correlação
+- Detecção e tratamento de outliers usando método IQR
+- Normalização dos dados usando StandardScaler
+- Engenharia de features:
+  - Criação de features de interação (BMI_Age, Glucose_Insulin_Ratio)
+  - Categorização de variáveis (BMI_Category, Age_Group, Glucose_Level)
+  - One-hot encoding para variáveis categóricas
+- Balanceamento da variável alvo quando necessário
+- Divisão do conjunto em treino e teste (80/20)
 
-#### 4. Descricao dos Modelos Implementados
-Foram implementados e avaliados três modelos principais:
+#### 4. Descrição dos Modelos Implementados
+Foram implementados e avaliados dois modelos principais:
 
-- Arvore de descisao (Dicision Tree): modelo baseado em regras de dicisao binaria que busca maximizar a pureza dos nos.
-- Random Forest: Conjunto de arvores de decisao treinados de forma alratoria com a votacao por maioria.
-- K-Nearest Neighbors(KNN): algoritmos baseados em distancia, que classifica uma boca amostra com base nas classes mais proximas no espaco de caracteristicas.
+- **Random Forest**: 
+  - Conjunto de árvores de decisão treinados de forma aleatória
+  - 100 estimadores
+  - Votação por maioria para classificação final
+  - Random state fixo para reprodutibilidade
 
-#### 5. Resultado e Comparacao entre Modelos
-Abaixo esta uma analise comparativa entre os modelos com vase na aciracia e tempo de execucao:
+- **Rede Neural Artificial (RNA)**:
+  - Arquitetura: 4 camadas
+  - Camada de entrada: número de features
+  - Camadas ocultas: 64, 32 e 16 neurônios
+  - Camada de saída: 1 neurônio (sigmoid)
+  - Dropout para prevenção de overfitting
+  - Early stopping para otimização do treinamento
 
-| Modelo | Acuracia(%) | Tempo de treino | interpretabilidade | Desafios Encontrados |
-| ----------- | ----------- | ----------- | ----------- |----------- |
-| Arvore decisao | 83.3 | Muito rapido | Alta | Propenso a overfitting |
-| Random Forest | 93.3 | Medio | Media | Complexidade e dificil interpretabilidade |
-| KNN | 63.3 | Lento | Baixa | Sensivel a Normalizacao e ao valor do K |
+#### 5. Resultados e Comparação entre Modelos
+Abaixo está uma análise comparativa entre os modelos com base nas métricas de avaliação:
 
-### Analise Comparativa:
-- **Melhor Desempenho(Acuracia):** A random forest obteve o melhor desempenho com 93,3% de acuracia, superando significativamente os outros dois.
-- **Interpretabilidade:** A Arvore de Decisao é a mais facil de interpretar, pois apresenta regras claras e faceis de visualizar. Já o Random Forest é mais dificil de analisar individualmente por ser um modelo de "caixa preta".
-- **Facilidade e velocidade:** Mais rapido de treinar: A arvore de decisao foi mais facil e rapida de se treinar, seguida pelo Random Forest. O KNN, por ser preguiçoso(não treina apenas armazena), ele tambem teve um grande atraso na inferencia, variando de acordo com o tamanho do dataset, quanto maior mais atraso.
+| Modelo | Acurácia | Precisão | Recall | F1-Score | AUC-ROC |
+|--------|----------|----------|---------|-----------|----------|
+| Random Forest | 0.6286 | 0.6842 | 0.6500 | 0.6667 | 0.6617 |
+| RNA | 0.6286 | 0.6842 | 0.6500 | 0.6667 | 0.6433 |
 
-### Desafios:
-- **KNN:** para trabalharmos com ele, foi necessario aplicarmos conceitos de normatização, evitando vieses em variavei com diferencas muito grandes de escalas.
-- **Random Forest:** devido a forma como funciona acaba sendo muito mais pesado computacionalmente falando.
-- **Arvore de Decisao:** em alguns momentos apresentou sinais de overfitting, mesmo usando estrategias para tentar controlar essa questao.
+### Análise Comparativa:
+- **Melhor Desempenho**: O Random Forest obteve um desempenho ligeiramente melhor, especialmente na métrica AUC-ROC (0.6617 vs 0.6433)
+- **Interpretabilidade**: 
+  - Random Forest: Permite análise de importância das features, com Glucose (22.3%), Insulin (16.1%) e Age (15.6%) como as mais relevantes
+  - RNA: Modelo de "caixa preta", difícil interpretação direta
+- **Tempo de Treinamento**:
+  - Random Forest: Treinamento mais rápido
+  - RNA: Requer mais tempo devido à complexidade da arquitetura e necessidade de múltiplas épocas
 
-### Conclusao Final e Aprendizado:
-- **Radom Forest:** apesar do desafio computacional, foi o metodo com o melhor desempenho, uma otima robustez e uma interpretabilidade interessante.
-- **Arvore de decisao:** é uma otima escolha caso a prioridade seja a interpretabilidade e pouco tempo para executar o treinamento.
-- **KNN:** se mostrou inadequado  para este caso, tendo em vista a sua acuracia de 63,3%, o alto tempo necessario para treinar, a baixa interpretabilidade e sua grande sensibilidade a normalizaçao, bem como, a complexidade para se encontrar o valor de K ideal.
+### Desafios Encontrados:
+- **Random Forest**:
+  - Ajuste do número de estimadores
+  - Balanceamento entre profundidade das árvores e overfitting
+  - Interpretação do conjunto de árvores
 
-### Aprendizados do grupo: 
-Durante a execucao deste trabalho podemos entender melhor a importancia de preparacao dos dados para cada um dos modelos. Conseguimos perceber que para se escolher o modelo precisamos analizar e conhecer a base e saber se é necessario priorizar desempenho, interpretabilidade ou buscar um meio termo. Ao decorrer de todo o processo, conseguimos ter uma ideia melhor de como as metricas são importantes para uma boa analise do modelo, mas tambem a necessidade de avaliar o tempo de execucao e a facilidade de manutencao de cada um dos algoritmos, o qual, só se faz possivel por meio da pratica e analise dos resultados.
+- **Rede Neural**:
+  - Definição da arquitetura ideal
+  - Ajuste dos hiperparâmetros (learning rate, batch size)
+  - Prevenção de overfitting
+  - Sensibilidade à inicialização dos pesos
+
+### Conclusão Final e Aprendizados:
+- **Random Forest**: 
+  - Apresentou o melhor desempenho geral
+  - Oferece boa interpretabilidade através da análise de importância das features
+  - Mais rápido para treinar e fazer previsões
+  - Melhor AUC-ROC, indicando melhor capacidade de discriminação
+
+- **Rede Neural**: 
+  - Desempenho similar ao Random Forest em várias métricas
+  - Requer mais tempo de treinamento
+  - Difícil interpretação dos resultados
+  - Sensível à inicialização e hiperparâmetros
+
+### Aprendizados do Grupo:
+Durante a execução deste trabalho, pudemos entender melhor:
+- A importância da preparação adequada dos dados
+- O impacto do feature engineering no desempenho dos modelos
+- A necessidade de balancear complexidade e interpretabilidade
+- A importância de múltiplas métricas de avaliação
+- O trade-off entre desempenho e tempo de treinamento
+- A necessidade de validação cruzada e técnicas de prevenção de overfitting

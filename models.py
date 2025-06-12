@@ -12,7 +12,14 @@ from index import load_dataframe, prepare_data, feature_engineering, balance_cla
 import seaborn as sns
 
 def plot_roc_curves(rf_fpr, rf_tpr, rf_auc, nn_fpr, nn_tpr, nn_auc):
-    """Plota as curvas ROC para ambos os modelos"""
+    """
+    Plota as curvas ROC para ambos os modelos (Random Forest e Rede Neural).
+    Args:
+        rf_fpr, rf_tpr: Taxas de falso positivo e verdadeiro positivo do Random Forest
+        rf_auc: Área sob a curva ROC do Random Forest
+        nn_fpr, nn_tpr: Taxas de falso positivo e verdadeiro positivo da Rede Neural
+        nn_auc: Área sob a curva ROC da Rede Neural
+    """
     plt.figure(figsize=(10, 6))
     plt.plot(rf_fpr, rf_tpr, label=f'Random Forest (AUC = {rf_auc:.3f})')
     plt.plot(nn_fpr, nn_tpr, label=f'Neural Network (AUC = {nn_auc:.3f})')
@@ -27,7 +34,12 @@ def plot_roc_curves(rf_fpr, rf_tpr, rf_auc, nn_fpr, nn_tpr, nn_auc):
     plt.close()
 
 def plot_confusion_matrices(rf_cm, nn_cm):
-    """Plota as matrizes de confusão para ambos os modelos"""
+    """
+    Plota as matrizes de confusão para ambos os modelos.
+    Args:
+        rf_cm: Matriz de confusão do Random Forest
+        nn_cm: Matriz de confusão da Rede Neural
+    """
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
     
     # Random Forest
@@ -47,7 +59,14 @@ def plot_confusion_matrices(rf_cm, nn_cm):
     plt.close()
 
 def train_and_evaluate_models(X, y):
-    """Treina e avalia diferentes modelos de machine learning"""
+    """
+    Treina e avalia os modelos de machine learning.
+    Args:
+        X: Features do dataset
+        y: Variável alvo
+    Returns:
+        DataFrame com os resultados comparativos dos modelos
+    """
     print("\n=== Treinamento e Avaliação dos Modelos ===")
     print(f"\nShape dos dados de entrada: {X.shape}")
     print(f"Proporção das classes: {y.value_counts(normalize=True).round(3)}")
@@ -94,6 +113,14 @@ def train_and_evaluate_models(X, y):
     return results_df
 
 def train_random_forest(X_train, X_test, y_train, y_test):
+    """
+    Treina e avalia o modelo Random Forest.
+    Args:
+        X_train, X_test: Features de treino e teste
+        y_train, y_test: Variável alvo de treino e teste
+    Returns:
+        Dicionário com resultados do modelo
+    """
     print("\nParâmetros do modelo:")
     print("- Número de árvores: 100")
     print("- Random state: 42")
@@ -144,6 +171,14 @@ def train_random_forest(X_train, X_test, y_train, y_test):
     return results
 
 def train_neural_network(X_train, X_test, y_train, y_test):
+    """
+    Treina e avalia o modelo de Rede Neural.
+    Args:
+        X_train, X_test: Features de treino e teste
+        y_train, y_test: Variável alvo de treino e teste
+    Returns:
+        Dicionário com resultados do modelo
+    """
     print("\nArquitetura do modelo:")
     print(f"- Camada de entrada: {X_train.shape[1]} neurônios")
     print("- Camada oculta 1: 64 neurônios + Dropout(0.3)")
@@ -205,7 +240,7 @@ def train_neural_network(X_train, X_test, y_train, y_test):
     results['tpr'] = tpr
     results['auc'] = auc(fpr, tpr)
     
-    # Imprimir resultados da RNA
+    # Imprimir resultados da Rede Neural
     print("\nResultados da Rede Neural:")
     print(f"Acurácia: {results['accuracy']:.4f}")
     print(f"Precisão: {results['precision']:.4f}")
@@ -220,6 +255,9 @@ def train_neural_network(X_train, X_test, y_train, y_test):
     return results
 
 def main():
+    """
+    Função principal que executa todo o pipeline de modelagem.
+    """
     # Carregar e preparar dados usando as funções do index.py
     df = load_dataframe()
     df_clean = prepare_data(df)
@@ -234,8 +272,9 @@ def main():
     results = train_and_evaluate_models(X, y)
     
     # Salvar resultados
-    results_df = pd.DataFrame(results)
-    save_output(results_df, 'model_results')
+    save_output(results, "model_results")
+    
+    return results
 
 if __name__ == "__main__":
     main() 
