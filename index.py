@@ -117,6 +117,9 @@ def detect_outliers(df):
 	plt.close()
 
 	# Análise estatística de outliers usando IQR
+	# IQR (Interquartile Range) é a diferença entre o terceiro quartil (Q3) e o primeiro quartil (Q1).
+	# Ele é usado para identificar a dispersão central dos dados e detectar outliers.
+
 	print("\nEstatísticas de Outliers (método IQR):")
 	for column in df.columns:
 		Q1 = df[column].quantile(0.25)
@@ -318,6 +321,8 @@ def main():
 	df_clean = prepare_data(df)
 	df_eng = feature_engineering(df_clean)
 	df_balanced = balance_classes(df_eng)
+ 
+	df_balanced.to_csv('processed_data.csv', index=False)
 	
 	# Salvar resultados
 	save_output(df_balanced, "processed_data")
